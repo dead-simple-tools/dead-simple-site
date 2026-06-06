@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0A0A0A">
+<title>DEAD SIMPLE — small browser tools that each do one thing</title>
+<meta name="description" content="A set of tiny browser extensions that each do one job. No account, minimal permissions, everything stays on your device.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0A0A0A; --paper:#F4F0E8; --hazard:#FFD60A; --go:#15803D; --mute:#6B6358;
+    --disp:"Anton","Arial Narrow",sans-serif; --mono:"JetBrains Mono",ui-monospace,monospace;
+    --edge:2px solid var(--ink);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;color:var(--ink);font-family:var(--mono);font-size:14px;line-height:1.55;
+    background-color:var(--paper);
+    background-image:linear-gradient(rgba(10,10,10,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(10,10,10,.045) 1px,transparent 1px);
+    background-size:26px 26px;
+  }
+  a{color:inherit;}
+  .tape{height:12px;background:repeating-linear-gradient(45deg,var(--hazard) 0 16px,var(--ink) 16px 32px);}
+
+  .hero{padding:34px 22px 24px;max-width:1180px;margin:0 auto;}
+  .kicker{font-size:11px;letter-spacing:.32em;color:var(--mute);}
+  h1{font-family:var(--disp);font-size:clamp(52px,16vw,140px);line-height:.84;letter-spacing:.01em;text-transform:uppercase;margin:10px 0 0;}
+  .pitch{max-width:600px;font-size:clamp(15px,2.4vw,19px);line-height:1.5;margin:18px 0 0;}
+  .pitch b{background:var(--hazard);padding:0 4px;font-weight:500;}
+  .trust{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px;}
+  .trust span{font-size:11px;border:1.5px solid var(--ink);padding:5px 9px;letter-spacing:.04em;}
+
+  nav{position:sticky;top:0;z-index:10;background:var(--paper);border-top:var(--edge);border-bottom:var(--edge);}
+  .navinner{max-width:1180px;margin:0 auto;display:flex;overflow-x:auto;scrollbar-width:none;}
+  .navinner::-webkit-scrollbar{display:none;}
+  nav a{flex:0 0 auto;font-family:var(--disp);font-size:15px;letter-spacing:.05em;text-transform:uppercase;
+    padding:13px 18px;border-right:1px solid var(--ink);white-space:nowrap;text-decoration:none;color:var(--ink);}
+  nav a:last-child{border-right:0;}
+  nav a:hover{background:var(--ink);color:var(--paper);}
+
+  section{max-width:1180px;margin:0 auto;padding:30px 22px 0;}
+  .shead{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:4px;}
+  .shead h2{font-family:var(--disp);font-size:clamp(26px,5vw,40px);letter-spacing:.04em;text-transform:uppercase;margin:0;}
+  .shead p{color:var(--mute);font-size:13px;margin:0;}
+  .rule{height:0;border-top:var(--edge);margin:10px 0 18px;}
+
+  .grid{display:grid;grid-template-columns:1fr;gap:18px;}
+  @media(min-width:640px){.grid{grid-template-columns:1fr 1fr;}}
+  @media(min-width:1000px){.grid{grid-template-columns:1fr 1fr 1fr;}}
+
+  .tool{position:relative;background:var(--paper);border:var(--edge);display:flex;flex-direction:column;
+    opacity:0;transform:translateY(14px);animation:rise .5s cubic-bezier(.2,.7,.2,1) forwards;animation-delay:calc(var(--i)*40ms);
+    transition:transform .12s steps(3),box-shadow .12s steps(3);}
+  @keyframes rise{to{opacity:1;transform:translateY(0);}}
+  .tool:hover{transform:translate(-3px,-3px);box-shadow:6px 6px 0 var(--ink);}
+  .accent{height:8px;}
+  .thead{display:flex;align-items:center;gap:10px;padding:13px 15px 6px;}
+  .nm{font-family:var(--disp);font-size:23px;letter-spacing:.03em;text-transform:uppercase;flex:1;line-height:1;}
+  .hole{width:13px;height:13px;border:2px solid var(--ink);border-radius:50%;flex:none;}
+  .frame{margin:0 15px;border:1px solid var(--ink);background:#fff;height:230px;overflow:hidden;}
+  .frame img{width:100%;display:block;}
+  .body{padding:13px 15px 15px;display:flex;flex-direction:column;gap:12px;flex:1;}
+  .desc{font-size:14px;line-height:1.5;}
+  .meta{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:auto;}
+  .flag{font-size:10px;letter-spacing:.06em;color:var(--mute);text-transform:uppercase;}
+  .cta{font-family:var(--disp);font-size:15px;letter-spacing:.04em;text-transform:uppercase;text-decoration:none;
+    border:var(--edge);padding:8px 12px;color:var(--ink);background:var(--paper);white-space:nowrap;}
+  .cta:hover{background:var(--ink);color:var(--paper);}
+
+  footer{max-width:1180px;margin:40px auto 0;border-top:var(--edge);padding:22px;font-size:12px;color:var(--mute);
+    display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;}
+  footer .wm{font-family:var(--disp);font-size:18px;letter-spacing:.1em;color:var(--ink);}
+  @media(prefers-reduced-motion:reduce){.tool{animation:none;opacity:1;transform:none;}}
+</style>
+</head>
+<body>
+  <div class="tape"></div>
+
+  <div class="hero">
+    <div class="kicker">BROWSER TOOLS · CHROME</div>
+    <h1>Dead Simple</h1>
+    <p class="pitch">Small browser tools that each do <b>one thing well</b>. No account, the fewest permissions each job needs, and everything stays <b>on your device</b>.</p>
+    <div class="trust">
+      <span>no account</span>
+      <span>minimal permissions</span>
+      <span>nothing leaves your device</span>
+      <span>no tracking</span>
+    </div>
+  </div>
+
+  <nav>
+    <div class="navinner">
+      <a href="#read">Read &amp; write</a>
+      <a href="#media">Video &amp; images</a>
+      <a href="#tabs">Tabs &amp; focus</a>
+      <a href="#tools">Privacy &amp; quick tools</a>
+    </div>
+  </nav>
+
+  <section id="read">
+    <div class="shead"><h2>Read &amp; write</h2><p>Get through pages faster.</p></div>
+    <div class="rule"></div><div class="grid" data-cat="read"></div>
+  </section>
+  <section id="media">
+    <div class="shead"><h2>Video &amp; images</h2><p>Control what plays, grab what you see.</p></div>
+    <div class="rule"></div><div class="grid" data-cat="media"></div>
+  </section>
+  <section id="tabs">
+    <div class="shead"><h2>Tabs &amp; focus</h2><p>Tame your tabs and your time.</p></div>
+    <div class="rule"></div><div class="grid" data-cat="tabs"></div>
+  </section>
+  <section id="tools">
+    <div class="shead"><h2>Privacy &amp; quick tools</h2><p>Small jobs, done and gone.</p></div>
+    <div class="rule"></div><div class="grid" data-cat="tools"></div>
+  </section>
+
+  <footer>
+    <span class="wm">DEAD SIMPLE</span>
+    <span>one job · minimal permissions · on your device</span>
+  </footer>
+
+<script>
+const DATA = [
+  {id:"words",c:"#D97706",cat:"read",name:"Word Count",desc:"How long is this? Word, character and reading-time count for any page or your selection.",flag:"on your device"},
+  {id:"speak",c:"#CA8A04",cat:"read",name:"Read Aloud",desc:"Listen instead of read. Has any page read to you in your browser's own voice.",flag:"no server"},
+  {id:"mark",c:"#9D174D",cat:"read",name:"Highlighter",desc:"Highlight what matters. Your marks stay on the page and come back when you return.",flag:"no account"},
+  {id:"grab",c:"#F97316",cat:"read",name:"Grab Page",desc:"Save a page as clean Markdown, ready to paste into your notes.",flag:"no account"},
+  {id:"wiki-skins",c:"#84CC16",cat:"read",name:"Wiki Skins",desc:"Wikipedia, but calmer. Swap in a cleaner reading theme.",flag:"no account"},
+  {id:"speed",c:"#C2410C",cat:"media",name:"Video Speed",desc:"Watch faster, or slower. Speed control for any video or audio.",flag:"no tracking"},
+  {id:"pip",c:"#0369A1",cat:"media",name:"Picture-in-Picture",desc:"Pop the video into a floating window and keep working.",flag:"one click"},
+  {id:"shot",c:"#84CC16",cat:"media",name:"Screenshot",desc:"Capture what you see, then download it or copy it to the clipboard.",flag:"no account"},
+  {id:"save-as",c:"#EC4899",cat:"media",name:"Save As",desc:"Save any image or video in the format you actually want.",flag:"on your device"},
+  {id:"stash",c:"#B45309",cat:"tabs",name:"Tab Stash",desc:"Too many tabs? Collapse them into a saved list and bring them back later.",flag:"never loses tabs"},
+  {id:"refresh",c:"#0EA5E9",cat:"tabs",name:"Refresh",desc:"Auto-reload a tab on a timer — for dashboards, scores, restocks.",flag:"per-tab"},
+  {id:"pomodoro",c:"#F4511E",cat:"tabs",name:"Pomodoro",desc:"A simple focus timer that lives in your toolbar.",flag:"no account"},
+  {id:"zoom",c:"#E11D48",cat:"tabs",name:"Page Zoom",desc:"Make a page bigger or smaller in one tap.",flag:"instant"},
+  {id:"note",c:"#059669",cat:"tabs",name:"Page Notes",desc:"Leave yourself a private note on any page.",flag:"private"},
+  {id:"dark",c:"#2563EB",cat:"tools",name:"Dark Mode",desc:"Force dark mode on the sites that still don't have it.",flag:"per-site"},
+  {id:"cleanurl",c:"#0F766E",cat:"tools",name:"Clean Link",desc:"Strip the tracking junk off a link before you share it.",flag:"no tracking"},
+  {id:"password",c:"#0891B2",cat:"tools",name:"Password",desc:"Generate a strong password — or a memorable passphrase you'll actually remember.",flag:"never leaves device"},
+  {id:"qr",c:"#16A34A",cat:"tools",name:"QR Code",desc:"Turn this page or any text into a QR code to scan.",flag:"works offline"},
+  {id:"pick",c:"#DB2777",cat:"tools",name:"Color Pick",desc:"Grab any color on screen as HEX, RGB or HSL.",flag:"no page access"},
+  {id:"copy",c:"#14B8A6",cat:"tools",name:"Copy Link",desc:"Copy this page as a clean link, Markdown, or HTML.",flag:"instant"},
+];
+let i = 0;
+for (const grid of document.querySelectorAll(".grid")) {
+  const cat = grid.dataset.cat;
+  grid.innerHTML = DATA.filter(d=>d.cat===cat).map(d=>`
+    <article class="tool" style="--i:${i++}">
+      <div class="accent" style="background:${d.c}"></div>
+      <div class="thead"><span class="nm">${d.name}</span><span class="hole"></span></div>
+      <div class="frame"><img loading="lazy" src="shots/${d.id}.png" alt="${d.name} screenshot"></div>
+      <div class="body">
+        <p class="desc">${d.desc}</p>
+        <div class="meta"><span class="flag">${d.flag}</span><a class="cta" href="#">Add to Chrome</a></div>
+      </div>
+    </article>`).join("");
+}
+</script>
+</body>
+</html>
